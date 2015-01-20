@@ -7,7 +7,7 @@
 	right: 10px;
 	position: absolute;
 }
-.login-form-bg {
+.signin-form-bg {
 	background-color: #FFFFFF;
 	border: 15px solid;
 	border-radius: 15px;
@@ -18,7 +18,7 @@
 	.nav-users {
 		position: fixed;
 	}
-	.login-form-bg {
+	.signin-form-bg {
 		margin-top: 50px;
 	}
 }
