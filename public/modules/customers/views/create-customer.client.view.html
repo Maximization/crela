@@ -6,6 +6,13 @@
 		<form class="" data-ng-submit="create()" novalidate>
 			<fieldset>
 				<div class="row">
+					<div class="form-group">
+						<div data-ng-show="error" class="text-center text-danger">
+							<div class="alert alter-danger" role="alert">
+								<strong data-ng-bind="error"></strong>
+							</div>
+						</div>
+					</div>
 					<div class="col-sm-6 text-center">
 						<i class="fa fa-user customer-profile" ng-class="{'text-primary': referred, 'text-danger': !referred}"></i>
 					</div>
@@ -79,10 +86,6 @@
 							<button type="submit" class="btn btn-success btn-lg">Save & Close</button>
 						</div>
 					</div>
-				</div>
-				
-				<div data-ng-show="error" class="text-danger">
-					<strong data-ng-bind="error"></strong>
 				</div>
 			</fieldset>
 		</form>

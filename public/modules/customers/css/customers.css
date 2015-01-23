@@ -1,3 +1,6 @@
+.modal-backdrop { /* Temp fix for the backdrop not appearing*/
+  bottom: 0;
+}
 .customer-profile {
 	font-size: 250px;
 }
@@ -7,4 +10,7 @@
 .checkbox-left {
 	width: 5%;
 	text-align: left;
+}
+.text-pink {
+	color: #EC407A;
 }
