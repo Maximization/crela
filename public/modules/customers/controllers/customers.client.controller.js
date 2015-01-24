@@ -11,6 +11,31 @@ customersApp.controller('CustomersController', ['$scope', '$stateParams', 'Authe
 		// Find a list of Customers
 		this.customers = Customers.query();
 
+		// Open a modal window to create a single customer record
+		this.modalCreate = function (size) {
+
+			var modalInstance = $modal.open({
+				templateUrl: 'modules/customers/views/create-customer.client.view.html',
+				controller: function ($scope, $modalInstance) {
+					$scope.ok = function () {
+						if (createCustomerForm.$valid) {
+							$modalInstance.close();
+						}
+					};
+
+					$scope.cancel = function () {
+						$modalInstance.dismiss('cancel');
+					};
+				},
+				size: size
+			});
+
+			modalInstance.result.then(function (selectedItem) {
+			}, function () {
+				$log.info('Modal dismissed at: ' + new Date());
+			});
+		};
+
 		// Open a modal window to update a single customer record
 		this.modalUpdate = function (size, selectedCustomer) {
 
@@ -44,14 +69,53 @@ customersApp.controller('CustomersController', ['$scope', '$stateParams', 'Authe
 			});
 		};
 
+		// Remove existing Customer
+		this.remove = function(customer) {
+			if (customer) { 
+				customer.$remove();
+
+				for (var i in this.customers) {
+					if (this.customers [i] === customer) {
+						this.customers.splice(i, 1);
+					}
+				}
+			} else {
+				this.customer.$remove(function() {
+				});
+			}
+		};
+
 	}
 ]);
 
 // Customers create controller
-customersApp.controller('CustomersCreateController', ['$scope', 'Customers',
-	function($scope, Customers) {
+customersApp.controller('CustomersCreateController', ['$scope', 'Customers', 'Notify',
+	function($scope, Customers, Notify) {
 		
-		
+		// Create new Customer
+		this.create = function() {
+			// Create new Customer object
+			var customer = new Customers ({
+				firstName: this.firstName,
+				lastName: this.lastName,
+				email: this.email,
+				phone: this.phone,
+				company: this.company,
+				website: this.website,
+				referred: this.referred,
+				channel: this.channel,
+				industry: this.industry
+			});
+
+			// Redirect after save
+			customer.$save(function(response) {
+
+				Notify.sendMsg('NewCustomer', {'id': response._id});
+			
+			}, function(errorResponse) {
+				$scope.error = errorResponse.data.message;
+			});
+		};
 
 
 	}
@@ -61,6 +125,12 @@ customersApp.controller('CustomersCreateController', ['$scope', 'Customers',
 customersApp.controller('CustomersUpdateController', ['$scope','Customers',
 	function($scope, Customers) {
 		
+		$scope.channelOptions = [
+			{id: 1, item:'Facebook'},
+			{id: 2, item:'Twitter'},
+			{id: 3, item:'LinkedIn'}
+		];
+
 		// Update existing Customer
 		this.update = function(updatedCustomer) {
 			var customer = updatedCustomer;
@@ -75,68 +145,19 @@ customersApp.controller('CustomersUpdateController', ['$scope','Customers',
 
 	}
 ]);
-		
 
-		// // Create new Customer
-		// $scope.create = function() {
-		// 	// Create new Customer object
-		// 	var customer = new Customers ({
-		// 		firstName: this.firstName,
-		// 		lastName: this.lastName,
-		// 		email: this.email,
-		// 		phone: this.phone,
-		// 		company: this.company,
-		// 		website: this.website,
-		// 		referred: this.referred,
-		// 		channel: this.channel,
-		// 		industry: this.industry
-		// 	});
+customersApp.directive('customerList', ['Customers', 'Notify', function(Customers, Notify) {
+	return {
+		restrict: 'E',
+		transclude: true,
+		templateUrl: 'modules/customers/views/customer-list-template.html',
+		link: function(scope, element, attrs) {
 
-		// 	// Redirect after save
-		// 	customer.$save(function(response) {
-		// 		$location.path('customers/' + response._id);
+			// when a new customer is added, update the customer list
 
-		// 		// Clear form fields
-		// 		$scope.firstName = '';
-		// 		$scope.lastName = '';
-		// 		$scope.email = '';
-		// 		$scope.phone = '';
-		// 		$scope.company = '';
-		// 		$scope.website = '';
-		// 		$scope.referred = '';
-		// 		$scope.channel = '';
-		// 		$scope.industry = '';
-
-		// 	}, function(errorResponse) {
-		// 		$scope.error = errorResponse.data.message;
-		// 	});
-		// };
-
-		// // Remove existing Customer
-		// $scope.remove = function(customer) {
-		// 	if ( customer ) { 
-		// 		customer.$remove();
-
-		// 		for (var i in $scope.customers) {
-		// 			if ($scope.customers [i] === customer) {
-		// 				$scope.customers.splice(i, 1);
-		// 			}
-		// 		}
-		// 	} else {
-		// 		$scope.customer.$remove(function() {
-		// 			$location.path('customers');
-		// 		});
-		// 	}
-		// };
-
-		
-
-		
-
-		// // Find existing Customer
-		// $scope.findOne = function() {
-		// 	$scope.customer = Customers.get({ 
-		// 		customerId: $stateParams.customerId
-		// 	});
-		// };
-	
+			Notify.getMsg('NewCustomer', function(event, data) {
+				scope.customersCtrl.customers = Customers.query();
+			});
+		}
+	};
+}]);

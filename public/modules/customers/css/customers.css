@@ -1,5 +1,5 @@
 .modal-backdrop { /* Temp fix for the backdrop not appearing*/
-  bottom: 0;
+	bottom: 0;
 }
 .customer-profile {
 	font-size: 250px;
@@ -8,9 +8,16 @@
 	font-size: 150px;
 }
 .checkbox-left {
-	width: 5%;
+	width: 10%;
 	text-align: left;
 }
 .text-pink {
 	color: #EC407A;
+}
+.extra-space {
+	padding-top: 15px;
+	padding-bottom: 15px;
+}
+input[type="radio"], input[type="checkbox"] {
+	margin: 0 0 0 !important;
 }
