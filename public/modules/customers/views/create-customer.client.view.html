@@ -87,7 +87,7 @@
 		</form>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-success btn-lg" ng-click="customersCrCtrl.create();ok()" ng-disabled="createCustomerForm.$invalid">Save & Close</button>
+		<button class="btn btn-success btn-lg" ng-click="customersCrCtrl.create();ok(createCustomerForm.$valid)" ng-disabled="createCustomerForm.$invalid">Save & Close</button>
 		<button class="btn btn-warning btn-lg" ng-click="cancel()">Cancel</button>
 	</div>
 </section>
